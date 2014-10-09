@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import javax.swing.AbstractAction;
 
 import javax.swing.Action;
-
 import org.multibit.controller.Controller;
 import org.multibit.controller.bitcoin.BitcoinController;
 import javax.mail.*;
@@ -38,8 +37,8 @@ public class DoSendEmailAction extends AbstractAction {
     private final Controller controller;
     private final BitcoinController bitcoinController;
     static Properties mailServerProperties;
-    static Session getMailSession;
     static MimeMessage generateMailMessage;
+    static Transport transport;
     //private String to;
 
     private static final Logger log = LoggerFactory.getLogger(DeleteSendingAddressSubmitAction.class);
@@ -58,35 +57,28 @@ public class DoSendEmailAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-      final String username = "aziza.alsawafi@gmail.com";
-        final String password = "L3BSJ300";
-        //Step1     
-        System.out.println("\n 1st ===> setup Mail Server Properties..");
+      final String username = "vip2uae@gmail.com";
+        final String password = "vbiefqhvdotwvwyk";
         mailServerProperties = System.getProperties();
-        mailServerProperties.put("mail.smtp.port", "587"); // TLS Port
-        mailServerProperties.put("mail.smtp.auth", "true"); // Enable Authentication
-        mailServerProperties.put("mail.smtp.starttls.enable", "true"); // Enable StartTLS
-        System.out.println("Mail Server Properties have been setup successfully..");
- 
-//Step2     
-        try {
-        System.out.println("\n\n 2nd ===> get Mail Session..");
-        getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+        mailServerProperties.put("mail.smtp.host", "smtp.gmail.com");
+        mailServerProperties.put("mail.smtp.socketFactory.port", "465");
+        mailServerProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        mailServerProperties.put("mail.smtp.auth", "true");
+        mailServerProperties.put("mail.smtp.port", "465");
+         try {
+        Session getMailSession = Session.getInstance(mailServerProperties, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(username, password);
+            }
+        }
+        );
         generateMailMessage = new MimeMessage(getMailSession);
         
         generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress("aziza.alsawafi@gmail.com"));
-        
-        generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress("aziza.alsawafi@gmail.com"));
         generateMailMessage.setSubject("Greetings from Crunchify.com..");
         String emailBody = "Test email by Crunchify.com JavaMail API example. " + "<br><br> Regards, <br>Crunchify Admin";
         generateMailMessage.setContent(emailBody, "text/html");
-        System.out.println("Mail Session has been created successfully..");
-        
- 
-//Step3     
-        System.out.println("\n\n 3rd ===> Get Session and Send mail");
-        Transport transport = getMailSession.getTransport("smtp");
-            // Enter your correct gmail UserID and Password
+        transport = getMailSession.getTransport("smtp");
         transport.connect("smtp.gmail.com", username, password);
         transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
         transport.close();
@@ -94,4 +86,5 @@ public class DoSendEmailAction extends AbstractAction {
             java.util.logging.Logger.getLogger(DoSendEmailAction.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
 }
