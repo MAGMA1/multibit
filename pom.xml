@@ -57,6 +57,11 @@
             <url>http://distribution.bitcoinj.googlecode.com/git/releases</url>
             <releases />
         </repository>
+        <repository>
+  		<id>Java.Net</id>
+  		<url>http://download.java.net/maven/2/</url>
+  	</repository>
+
         <!-- zxing release repo -->
         <repository>
             <id>mvn-adamgent</id>
@@ -646,13 +651,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.2</version>
-            <type>jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.6.2</version>
@@ -783,6 +781,22 @@
             <version>2.2.40</version>
             <systemPath>${java.home}/lib/jfxrt.jar</systemPath>
             <scope>system</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.5.0-b01</version>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>6.0</version>
         </dependency>
     </dependencies>
 
