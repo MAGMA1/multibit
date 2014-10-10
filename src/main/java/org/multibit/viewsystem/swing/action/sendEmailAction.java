@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2011 multibit.org
  *
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import org.multibit.utils.ImageLoader;
 import org.multibit.viewsystem.swing.view.components.MultiBitDialog;
 import org.multibit.viewsystem.swing.view.components.MultiBitTextField;
 import org.multibit.viewsystem.swing.view.dialogs.SendEmailDialog;
@@ -52,7 +54,7 @@ public class sendEmailAction extends AbstractAction {
      * Creates a new {@link ExportTransactionsSubmitAction}.
      */
     public sendEmailAction(BitcoinController bitcoinController, MultiBitFrame mainFrame) {
-        
+        super(bitcoinController.getLocaliser().getString("exportTransactionsSubmitAction.text"), ImageLoader.createImageIcon(ImageLoader.TRANSACTIONS_EXPORT_ICON_FILE));
         this.bitcoinController = bitcoinController;
         this.controller = this.bitcoinController;
         this.mainFrame = mainFrame;
@@ -75,3 +77,4 @@ public class sendEmailAction extends AbstractAction {
         
     }
 }
+

@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2011 multibit.org
  *
@@ -70,7 +71,6 @@ public class DoSendEmailAction extends AbstractAction {
     static Transport transport;
     SendEmailDialog sendEmailD;
     JTextField mailTextF;
-    ExportTransactionsAttAction attachmentAction;
     File exportTransactionsFile;
     
     
@@ -279,3 +279,4 @@ public class DoSendEmailAction extends AbstractAction {
     }
     
 }
+

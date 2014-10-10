@@ -58,8 +58,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
-import org.multibit.viewsystem.swing.action.ExportTransactionsAttAction;
 import org.multibit.viewsystem.swing.action.sendEmailAction;
+
 
 public class ShowTransactionsPanel extends JPanel implements Viewable, CurrencyConverterListener {
     private static final long serialVersionUID = 1235108897887842662L;
@@ -399,7 +399,7 @@ public class ShowTransactionsPanel extends JPanel implements Viewable, CurrencyC
         constraints.anchor = GridBagConstraints.LINE_START;
         buttonPanel.add(exportTransactionsButton, constraints);
         
-         sendEmailAction = new sendEmailAction(bitcoinController, mainFrame);
+        sendEmailAction = new sendEmailAction(bitcoinController, mainFrame);
         sendEmailButton = new MultiBitButton(sendEmailAction, controller);
         sendEmailButton.setText("Email to");
         constraints.fill = GridBagConstraints.NONE;

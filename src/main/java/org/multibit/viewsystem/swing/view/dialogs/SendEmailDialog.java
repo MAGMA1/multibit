@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2011 multibit.org
  *
@@ -184,3 +185,4 @@ public class SendEmailDialog extends MultiBitDialog {
 
     }
 }
+
