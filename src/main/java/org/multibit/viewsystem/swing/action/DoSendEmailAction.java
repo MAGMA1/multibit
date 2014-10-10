@@ -45,6 +45,7 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.multibit.file.WalletTableDataEntryConverter;
 import org.multibit.file.WalletTableDataHeaderEntryConverter;
@@ -115,7 +116,7 @@ public class DoSendEmailAction extends AbstractAction {
         generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTextF.getText()));
         generateMailMessage.setSubject("Multibit Wallet: Your transactions.");
          BodyPart messageBodyPart = new MimeBodyPart();
-         messageBodyPart.setText("Attached the CSV file which contains all your transactions.");
+         messageBodyPart.setText("Dear MultiBit User,\n \n Attached the CSV file which contains all your transactions.\n \n Regards,\n MAGMA-MultiBit");
          Multipart multipart = new MimeMultipart();
          multipart.addBodyPart(messageBodyPart);
          messageBodyPart = new MimeBodyPart();
@@ -127,6 +128,20 @@ public class DoSendEmailAction extends AbstractAction {
         generateMailMessage.setContent(multipart );
         transport = getMailSession.getTransport("smtp");
         transport.connect("smtp.gmail.com", username, password);
+        
+        boolean isValid = false;
+        try {
+        InternetAddress emailAddr = new InternetAddress(mailTextF.getText());
+        emailAddr.validate();
+        isValid = true;
+        } catch (AddressException ex) {
+            //System.out.println("You are in a catch block");
+            final JPanel panel = new JPanel();
+
+            JOptionPane.showMessageDialog(panel, "Please enter a valid Email Address", "Warning",
+            JOptionPane.WARNING_MESSAGE);   
+        }
+        
         transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
         transport.close();
         } catch (MessagingException ex) {
@@ -134,6 +149,7 @@ public class DoSendEmailAction extends AbstractAction {
         }
          if (sendEmailD != null) {
             sendEmailD.setVisible(false);
+            
             boolean deleteWasSuccessful = exportTransactionsFile.delete();
             if (!deleteWasSuccessful) {
                 String message2 = controller.getLocaliser().getString("exportTransactionsSubmitAction.genericCouldNotDelete",
