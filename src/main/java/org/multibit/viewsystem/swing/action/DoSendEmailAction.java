@@ -19,14 +19,11 @@ package org.multibit.viewsystem.swing.action;
 import com.googlecode.jcsv.CSVStrategy;
 import com.googlecode.jcsv.writer.CSVWriter;
 import com.googlecode.jcsv.writer.internal.CSVWriterBuilder;
-import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import static java.lang.System.out;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -37,13 +34,11 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.swing.AbstractAction;
-
 import javax.swing.Action;
 import org.multibit.controller.Controller;
 import org.multibit.controller.bitcoin.BitcoinController;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -53,8 +48,6 @@ import org.multibit.message.MessageManager;
 import org.multibit.model.bitcoin.BitcoinModel;
 import org.multibit.model.bitcoin.WalletData;
 import org.multibit.model.bitcoin.WalletTableData;
-import org.multibit.utils.ImageLoader;
-import org.multibit.viewsystem.swing.WalletTableModel;
 import org.multibit.viewsystem.swing.view.dialogs.SendEmailDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +66,7 @@ public class DoSendEmailAction extends AbstractAction {
     SendEmailDialog sendEmailD;
     JTextField mailTextF;
     File exportTransactionsFile;
+    String defaultFileName;
     
     
     private static final Logger log = LoggerFactory.getLogger(DeleteSendingAddressSubmitAction.class);
@@ -93,72 +87,67 @@ public class DoSendEmailAction extends AbstractAction {
     @Override
     
     public void actionPerformed(ActionEvent e) {
-        String defaultFileName;
-        defaultFileName =  "AttachmentTransactions" + "." + BitcoinModel.CSV_FILE_EXTENSION;
-        exportTransactions(defaultFileName);
-        final String username = "magma.multibit@gmail.com";
-        final String password = "psdjsrvxkvlvvzvk";
-        mailServerProperties = System.getProperties();
-        mailServerProperties.put("mail.smtp.host", "smtp.gmail.com");
-        mailServerProperties.put("mail.smtp.socketFactory.port", "465");
-        mailServerProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        mailServerProperties.put("mail.smtp.auth", "true");
-        mailServerProperties.put("mail.smtp.port", "465");
-         try {
-        Session getMailSession = Session.getInstance(mailServerProperties, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(username, password);
-            }
-        }
-        );
-        generateMailMessage = new MimeMessage(getMailSession);
-        
-        generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTextF.getText()));
-        generateMailMessage.setSubject("Multibit Wallet: Your transactions.");
-         BodyPart messageBodyPart = new MimeBodyPart();
-         messageBodyPart.setText("Dear MultiBit User,\n \n Attached the CSV file which contains all your transactions.\n \n Regards,\n MAGMA-MultiBit");
-         Multipart multipart = new MimeMultipart();
-         multipart.addBodyPart(messageBodyPart);
-         messageBodyPart = new MimeBodyPart();
-         String filename = "AttachmentTransactions.csv";
-         DataSource source = new FileDataSource(filename);
-         messageBodyPart.setDataHandler(new DataHandler(source));
-         messageBodyPart.setFileName(filename);
-         multipart.addBodyPart(messageBodyPart);
-        generateMailMessage.setContent(multipart );
-        transport = getMailSession.getTransport("smtp");
-        transport.connect("smtp.gmail.com", username, password);
-        
         boolean isValid = false;
+        defaultFileName =  "AttachmentTransactions" + "." + BitcoinModel.CSV_FILE_EXTENSION;
         try {
-        InternetAddress emailAddr = new InternetAddress(mailTextF.getText());
-        emailAddr.validate();
-        isValid = true;
+            InternetAddress emailAddr = new InternetAddress(mailTextF.getText());
+            emailAddr.validate();
+            isValid = true;
         } catch (AddressException ex) {
-            //System.out.println("You are in a catch block");
             final JPanel panel = new JPanel();
-
             JOptionPane.showMessageDialog(panel, "Please enter a valid Email Address", "Warning",
             JOptionPane.WARNING_MESSAGE);   
         }
-        
-        transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
-        transport.close();
-        } catch (MessagingException ex) {
-            java.util.logging.Logger.getLogger(DoSendEmailAction.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         if (sendEmailD != null) {
-            sendEmailD.setVisible(false);
-            
-            boolean deleteWasSuccessful = exportTransactionsFile.delete();
-            if (!deleteWasSuccessful) {
-                String message2 = controller.getLocaliser().getString("exportTransactionsSubmitAction.genericCouldNotDelete",
-                        new Object[] { defaultFileName});
-                log.error(message2);
-                MessageManager.INSTANCE.addMessage(new org.multibit.message.Message(message2));
-                return;
+        if(isValid){
+            exportTransactions(defaultFileName);
+            final String username = "magma.multibit@gmail.com";
+            final String password = "psdjsrvxkvlvvzvk";
+            mailServerProperties = System.getProperties();
+            mailServerProperties.put("mail.smtp.host", "smtp.gmail.com");
+            mailServerProperties.put("mail.smtp.socketFactory.port", "465");
+            mailServerProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            mailServerProperties.put("mail.smtp.auth", "true");
+            mailServerProperties.put("mail.smtp.port", "465");
+            try {
+                Session getMailSession = Session.getInstance(mailServerProperties, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+                }
             }
+            );
+            generateMailMessage = new MimeMessage(getMailSession);
+        
+            generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTextF.getText()));
+            generateMailMessage.setSubject("Multibit Wallet: Your transactions.");
+            BodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setText("Dear MultiBit User,\n \n Attached the CSV file which contains all your transactions.\n \n Regards,\n MAGMA-MultiBit");
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+            messageBodyPart = new MimeBodyPart();
+            String filename = "AttachmentTransactions.csv";
+            DataSource source = new FileDataSource(filename);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(filename);
+            multipart.addBodyPart(messageBodyPart);
+            generateMailMessage.setContent(multipart );
+            transport = getMailSession.getTransport("smtp");
+            transport.connect("smtp.gmail.com", username, password);
+            transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
+            transport.close();
+            } catch (MessagingException ex) {
+                java.util.logging.Logger.getLogger(DoSendEmailAction.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (sendEmailD != null) {
+                sendEmailD.setVisible(false);
             
+                boolean deleteWasSuccessful = exportTransactionsFile.delete();
+                if (!deleteWasSuccessful) {
+                    String message2 = controller.getLocaliser().getString("exportTransactionsSubmitAction.genericCouldNotDelete",
+                        new Object[] { defaultFileName});
+                    log.error(message2);
+                MessageManager.INSTANCE.addMessage(new org.multibit.message.Message(message2));
+                }
+            }
         }
     }
 
@@ -178,22 +167,6 @@ public class DoSendEmailAction extends AbstractAction {
         }
 
         exportTransactionsFile = new File(exportTransactionsFilename);
-        
-        
-            
-            // Delete the existing file.
-            /*boolean deleteWasSuccessful = exportTransactionsFile.delete();
-            if (!deleteWasSuccessful) {
-                String message2 = controller.getLocaliser().getString("exportTransactionsSubmitAction.genericCouldNotDelete",
-                        new Object[] { exportTransactionsFilename});
-                log.error(message2);
-                MessageManager.INSTANCE.addMessage(new org.multibit.message.Message(message2));
-                return;
-            }*/
-        
-        
-        // Now actually perform the export.
-        // (This is separated out to make it easier to test.)
         exportTransactionsDoIt(bitcoinController.getModel().getActivePerWalletModelData(), exportTransactionsFilename);
     }
     public void exportTransactionsDoIt(WalletData walletData, String exportTransactionsFilename) {        
