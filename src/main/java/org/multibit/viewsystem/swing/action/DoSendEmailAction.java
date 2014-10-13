@@ -34,7 +34,6 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import org.multibit.controller.Controller;
 import org.multibit.controller.bitcoin.BitcoinController;
 import javax.mail.*;
@@ -52,9 +51,7 @@ import org.multibit.viewsystem.swing.view.dialogs.SendEmailDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * This {@link Action} represents an action to delete a sending address.
- */
+
 public class DoSendEmailAction extends AbstractAction {
 
     private static final long serialVersionUID = 200111999465875405L;
@@ -71,9 +68,6 @@ public class DoSendEmailAction extends AbstractAction {
     
     private static final Logger log = LoggerFactory.getLogger(DeleteSendingAddressSubmitAction.class);
 
-    /**
-     * Creates a new {@link DeleteSendingAddressSubmitAction}.
-     */
     public DoSendEmailAction(BitcoinController bitcoinController, SendEmailDialog sendEmailDialog, JTextField mailTextField) {
        this.bitcoinController = bitcoinController;
         this.controller = this.bitcoinController;
@@ -81,9 +75,6 @@ public class DoSendEmailAction extends AbstractAction {
         mailTextF = mailTextField;
     }
 
-    /**
-     * Delete the currently selected sending address.
-     */
     @Override
     
     public void actionPerformed(ActionEvent e) {
@@ -99,6 +90,7 @@ public class DoSendEmailAction extends AbstractAction {
             JOptionPane.WARNING_MESSAGE);   
         }
         if(isValid){
+            sendEmailD.setVisible(false);
             exportTransactions(defaultFileName);
             final String username = "magma.multibit@gmail.com";
             final String password = "psdjsrvxkvlvvzvk";
@@ -138,7 +130,6 @@ public class DoSendEmailAction extends AbstractAction {
                 java.util.logging.Logger.getLogger(DoSendEmailAction.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (sendEmailD != null) {
-                sendEmailD.setVisible(false);
             
                 boolean deleteWasSuccessful = exportTransactionsFile.delete();
                 if (!deleteWasSuccessful) {
