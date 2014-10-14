@@ -63,6 +63,7 @@ import java.math.BigDecimal;
 import java.text.Collator;
 import java.util.*;
 import java.util.List;
+import org.multibit.viewsystem.swing.action.SearchAddressAction;
 
 
 /**
@@ -93,7 +94,7 @@ public abstract class AbstractTradePanel extends JPanel implements Viewable, Cop
     protected static final int PREFERRED_NUMBER_OF_LABEL_ROWS = 3;
 
     protected MultiBitFrame mainFrame;
-
+    protected SendBitcoinPanel sendBitcoinPanel;
     protected final Controller controller;
     protected final BitcoinController bitcoinController;
 
@@ -115,6 +116,9 @@ public abstract class AbstractTradePanel extends JPanel implements Viewable, Cop
     protected JTable addressesTable;
 
     protected MultiBitTextField addressTextField;
+    protected MultiBitTextField searchTextField;
+    
+    protected JComboBox searchByList;
 
     protected int selectedAddressRowModel;
 
@@ -122,9 +126,11 @@ public abstract class AbstractTradePanel extends JPanel implements Viewable, Cop
 
     protected MultiBitButton createNewButton;
     protected MultiBitButton deleteButton;
+    protected MultiBitButton searchAddressButton;
 
     protected Action  createNewAddressAction;
     protected Action  deleteAddressAction;
+    protected Action searchAddressAction;
 
     protected JLabel titleLabel;
 
@@ -561,6 +567,39 @@ public abstract class AbstractTradePanel extends JPanel implements Viewable, Cop
         constraints.weighty = 1;
         constraints.anchor = GridBagConstraints.LINE_START;
         addressesHeaderPanel.add(titleLabel, constraints);
+        
+        String[] searchStrings = { "   Find By   ", "Label","Address"};
+        searchByList = new JComboBox(searchStrings);
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.gridx = 4 + offset;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.anchor = GridBagConstraints.LINE_START;
+        addressesHeaderPanel.add(searchByList, constraints);
+        
+        searchTextField = new MultiBitTextField("", 15, controller);
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.gridx = 5 + offset;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.anchor = GridBagConstraints.LINE_START;
+        addressesHeaderPanel.add(searchTextField, constraints);
+                
+        searchAddressAction = new SearchAddressAction(bitcoinController, sendBitcoinPanel, searchByList, searchTextField);
+        searchAddressButton = new MultiBitButton(searchAddressAction, controller);
+        searchAddressButton.setText("Search");
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.gridx = 6 + offset;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.anchor = GridBagConstraints.LINE_START;
+        addressesHeaderPanel.add(searchAddressButton, constraints);
 
         JPanel filler2 = new JPanel();
         filler2.setOpaque(false);
