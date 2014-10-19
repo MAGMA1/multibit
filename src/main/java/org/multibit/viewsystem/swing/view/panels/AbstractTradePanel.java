@@ -120,6 +120,8 @@ public abstract class AbstractTradePanel extends JPanel implements Viewable, Cop
     protected MultiBitTextField addressTextField;
     protected MultiBitTextField searchTextField;
     
+    protected JComboBox searchByList;
+    
     TableRowSorter<TableModel> rowSorter;
 
     protected int selectedAddressRowModel;
@@ -672,10 +674,21 @@ public abstract class AbstractTradePanel extends JPanel implements Viewable, Cop
         constraints.weighty = 1;
         constraints.anchor = GridBagConstraints.LINE_START;
         addressesHeaderPanel.add(titleLabel, constraints);
+        
+        String[] searchStrings = { "   Find By   ", "Label","Address"};
+        searchByList = new JComboBox(searchStrings);
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.gridx = 5 ;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.anchor = GridBagConstraints.LINE_START;
+        addressesHeaderPanel.add(searchByList, constraints);
        
         searchTextField = new MultiBitTextField("", 25, controller);
         constraints.fill = GridBagConstraints.NONE;
-        constraints.gridx = 5;
+        constraints.gridx = 6;
         constraints.gridy = 0;
         constraints.gridwidth = 1;
         constraints.weightx = 1;
@@ -692,11 +705,12 @@ public abstract class AbstractTradePanel extends JPanel implements Viewable, Cop
         search(documentEvent);
       }
       private void search(DocumentEvent documentEvent) {
-      Document source = documentEvent.getDocument();
+          Document source = documentEvent.getDocument();
       String exp = source.toString();
       RowFilter<TableModel, Object> rf = null;
         try {
-      rf = RowFilter.regexFilter(searchTextField.getText(), 0);
+      
+            rf = RowFilter.regexFilter(searchTextField.getText(), searchByList.getSelectedIndex()-1);
     } catch (java.util.regex.PatternSyntaxException e) {
       return;
     }
@@ -705,19 +719,7 @@ public abstract class AbstractTradePanel extends JPanel implements Viewable, Cop
         searchTextField.getDocument().addDocumentListener(documentListener);
         addressesHeaderPanel.add(searchTextField, constraints);
 
-        JLabel filterLabel = new JLabel();
-        filterLabel.setHorizontalTextPosition(JLabel.CENTER);
-        filterLabel.setText("Enter the word that you want to search about");
-        filterLabel.setFont(FontSizer.INSTANCE.getAdjustedDefaultFontWithDelta(ColorAndFontConstants.MULTIBIT_LARGE_FONT_INCREASE));
-
-        constraints.fill = GridBagConstraints.NONE;
-        constraints.gridx = 6;
-        constraints.gridy = 0;
-        constraints.gridwidth = 1;
-        constraints.weightx = 1;
-        constraints.weighty = 1;
-        constraints.anchor = GridBagConstraints.LINE_START;
-        addressesHeaderPanel.add(filterLabel, constraints);
+       
         JPanel filler2 = new JPanel();
         filler2.setOpaque(false);
         constraints.fill = GridBagConstraints.HORIZONTAL;
