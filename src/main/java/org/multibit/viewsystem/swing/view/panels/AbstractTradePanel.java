@@ -710,7 +710,7 @@ public abstract class AbstractTradePanel extends JPanel implements Viewable, Cop
       RowFilter<TableModel, Object> rf = null;
         try {
       
-            rf = RowFilter.regexFilter(searchTextField.getText(), searchByList.getSelectedIndex()-1);
+            rf = RowFilter.regexFilter("(?i)" + searchTextField.getText(), searchByList.getSelectedIndex()-1);
     } catch (java.util.regex.PatternSyntaxException e) {
       return;
     }
