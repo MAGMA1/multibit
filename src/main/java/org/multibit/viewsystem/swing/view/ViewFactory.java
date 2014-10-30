@@ -77,7 +77,7 @@ public class ViewFactory {
         break;
       }
 
-      case WELCOME_VIEW: {
+     case WELCOME_VIEW: {
         viewToReturn = new WelcomePanel(controller, mainFrame);
         break;
       }
@@ -116,7 +116,8 @@ public class ViewFactory {
         viewToReturn = new ResetTransactionsPanel(this.bitcoinController, mainFrame);
         break;
       }
-
+      
+      
       case SHOW_OPEN_URI_DIALOG_VIEW: {
         viewToReturn = new ShowOpenUriDialog(this.bitcoinController, mainFrame);
         break;
@@ -165,12 +166,14 @@ public class ViewFactory {
         viewToReturn = new RemovePasswordPanel(this.bitcoinController, mainFrame);
         break;
       }
-
-      case CHARTS_VIEW: {
+       case CHARTS_VIEW: {
         viewToReturn = new ChartsPanel(this.bitcoinController, mainFrame);
         break;
       }
-
+       
+      case DRAFT_VIEW: {
+        viewToReturn = new DraftsPanel(controller, mainFrame);
+      }
       default: {
       }
     }
