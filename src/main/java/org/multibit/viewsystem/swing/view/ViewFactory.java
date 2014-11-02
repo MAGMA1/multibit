@@ -15,6 +15,7 @@
  */
 package org.multibit.viewsystem.swing.view;
 
+import java.io.IOException;
 import org.multibit.controller.Controller;
 import org.multibit.controller.bitcoin.BitcoinController;
 import org.multibit.controller.exchange.ExchangeController;
@@ -53,7 +54,7 @@ public class ViewFactory {
     viewMap = new EnumMap<View, Viewable>(View.class);
   }
 
-  public Viewable getView(View viewNumber) {
+  public Viewable getView(View viewNumber) throws IOException {
     Viewable viewToReturn = viewMap.get(viewNumber);
 
     if (viewToReturn == null) {
@@ -67,7 +68,7 @@ public class ViewFactory {
     viewMap.put(viewNumber, view);
   }
 
-  private Viewable createView(View viewNumber) {
+  private Viewable createView(View viewNumber) throws IOException {
     Viewable viewToReturn = null;
 
     switch (viewNumber) {
@@ -172,7 +173,7 @@ public class ViewFactory {
       }
        
       case DRAFT_VIEW: {
-        viewToReturn = new DraftsPanel(controller, mainFrame);
+        viewToReturn = new DraftsPanel(bitcoinController, mainFrame);
       }
       default: {
       }
