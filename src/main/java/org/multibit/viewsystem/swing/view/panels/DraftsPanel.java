@@ -43,6 +43,7 @@ import org.multibit.viewsystem.View;
 import org.multibit.viewsystem.Viewable;
 import org.multibit.viewsystem.swing.ColorAndFontConstants;
 import org.multibit.viewsystem.swing.MultiBitFrame;
+import org.multibit.viewsystem.swing.action.DeleteDraftsAction;
 import org.multibit.viewsystem.swing.action.RetrieveDraftsAction;
 import org.multibit.viewsystem.swing.view.components.MultiBitButton;
 import org.multibit.viewsystem.swing.view.models.DraftsTableModel;
@@ -66,6 +67,9 @@ public class DraftsPanel extends JPanel implements Viewable {
     private String address;
     private String label;
     private String amount;
+    
+    private MultiBitButton deleteDraftButton;
+    private Action DeleteDraftsAction;
     /**
      * Creates a new {@link MessagesPanel}.
      */
@@ -128,6 +132,7 @@ public class DraftsPanel extends JPanel implements Viewable {
         buttonPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, SystemColor.windowBorder));
         buttonPanel.setOpaque(true);
         buttonPanel.setBackground(ColorAndFontConstants.MID_BACKGROUND_COLOR);
+        
         retrieveDraftsAction = new RetrieveDraftsAction(bitcoinController, mainFrame,this, table);
         retrieveDraftButton = new MultiBitButton(retrieveDraftsAction, controller);
         retrieveDraftButton.setText("Retrieve");
@@ -140,6 +145,19 @@ public class DraftsPanel extends JPanel implements Viewable {
         constraints.gridheight = 1;
         constraints.anchor = GridBagConstraints.LINE_START;
         buttonPanel.add(retrieveDraftButton, constraints);
+        
+        DeleteDraftsAction = new DeleteDraftsAction(bitcoinController, mainFrame,this, table);
+        deleteDraftButton = new MultiBitButton(DeleteDraftsAction, controller);
+        deleteDraftButton.setText("Delete");
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.gridx = 2;
+        constraints.gridy = 0;
+        constraints.weightx = 0.1;
+        constraints.weighty = 1.0;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.anchor = GridBagConstraints.LINE_START;
+        buttonPanel.add(deleteDraftButton, constraints);
 
         JPanel fill1 = new JPanel();
         fill1.setOpaque(false);
