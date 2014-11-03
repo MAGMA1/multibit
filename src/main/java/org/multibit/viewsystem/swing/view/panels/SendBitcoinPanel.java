@@ -46,7 +46,6 @@ public class SendBitcoinPanel extends AbstractTradePanel implements Viewable {
   private static boolean enableSendButton = false;
   private static MultiBitButton sendButton;
   private MultiBitButton pasteAddressButton;
-  private MultiBitButton draftButton;
 
   private static SendBitcoinPanel thisPanel;
 
@@ -60,6 +59,7 @@ public class SendBitcoinPanel extends AbstractTradePanel implements Viewable {
 
     regularTooltipText = controller.getLocaliser().getString("sendBitcoinAction.tooltip");
     pleaseWaitTooltipText = controller.getLocaliser().getString("sendBitcoinAction.pleaseWait.tooltip");
+    
   }
 
   public static void setEnableSendButton(boolean enableSendButton) {
@@ -226,18 +226,6 @@ public class SendBitcoinPanel extends AbstractTradePanel implements Viewable {
     constraints.gridwidth = 1;
     constraints.anchor = GridBagConstraints.LINE_START;
     formPanel.add(pasteAddressButton, constraints);
-    
-    MultiBitAction draftAction = new MultiBitAction(controller,"d","d","d",",d", View.DRAFT_VIEW);
-    draftButton = new MultiBitButton(draftAction, controller);
-    draftButton.setText("Draft");
-    constraints.fill = GridBagConstraints.NONE;
-    constraints.gridx = 8;
-    constraints.gridy = 1;
-    constraints.weightx = 10.0;
-    constraints.weighty = 0.2;
-    constraints.gridwidth = 1;
-    constraints.anchor = GridBagConstraints.LINE_START;
-    formPanel.add(draftButton, constraints);
 
     MultiBitLabel labelLabel = new MultiBitLabel(controller.getLocaliser().getString("sendBitcoinPanel.labelLabel"));
     labelLabel.setToolTipText(HelpContentsPanel.createTooltipText(controller.getLocaliser().getString("sendBitcoinPanel.labelLabel.tooltip")));
@@ -408,7 +396,12 @@ public class SendBitcoinPanel extends AbstractTradePanel implements Viewable {
       return "";
     }
   }
-
+  public void changeValue(String ad, String la, String am){
+      addressTextField.setText(ad);
+      labelTextArea.setText(la);
+      amountBTCTextField.setText(am);
+  }
+  
   @Override
   public void loadForm() {
     // get the current address, label and amount from the model
