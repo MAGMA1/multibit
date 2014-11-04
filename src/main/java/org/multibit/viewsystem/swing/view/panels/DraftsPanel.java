@@ -146,7 +146,7 @@ public class DraftsPanel extends JPanel implements Viewable {
         constraints.anchor = GridBagConstraints.LINE_START;
         buttonPanel.add(retrieveDraftButton, constraints);
         
-        DeleteDraftsAction = new DeleteDraftsAction(bitcoinController, mainFrame,this, table);
+        DeleteDraftsAction = new DeleteDraftsAction(bitcoinController, mainFrame, table);
         deleteDraftButton = new MultiBitButton(DeleteDraftsAction, controller);
         deleteDraftButton.setText("Delete");
         constraints.fill = GridBagConstraints.NONE;
