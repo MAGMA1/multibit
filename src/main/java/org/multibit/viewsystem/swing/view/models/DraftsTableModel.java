@@ -18,12 +18,14 @@ package org.multibit.viewsystem.swing.view.models;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
+import org.joda.money.Money;
 import org.multibit.controller.bitcoin.BitcoinController;
+import org.multibit.exchange.CurrencyConverter;
+import org.multibit.exchange.CurrencyConverterResult;
 import org.multibit.model.bitcoin.BitcoinModel;
 import org.multibit.model.bitcoin.WalletAddressBookData;
 import org.multibit.model.bitcoin.WalletInfoData;
@@ -35,10 +37,13 @@ public class DraftsTableModel extends AbstractTableModel {
 
     private final String[] tableHeaderKeys;
     private final BitcoinController bitcoinController;
+        
+    protected Money parsedAmountBTC = null;
+    protected Money parsedAmountFiat = null;
 
     public DraftsTableModel(BitcoinController bitcoinController) {
         this.bitcoinController = bitcoinController;
-        tableHeaderKeys = new String[] { "Adress","Label","Amount (BTC)" , "Amount($)"};
+        tableHeaderKeys = new String[] { "Adress","Label","Amount (BTC)" , "Amount ($)"};
 
     }
         private ArrayList draftData(){
@@ -99,6 +104,12 @@ public class DraftsTableModel extends AbstractTableModel {
             String[] parts = strRow.split("////");
             if(column<parts.length){
                 return parts[column];
+            }
+            if(column == 3){
+                CurrencyConverterResult converterResult = CurrencyConverter.INSTANCE.parseToBTC(parts[2]);                    
+                parsedAmountBTC = converterResult.getBtcMoney();
+                parsedAmountFiat = CurrencyConverter.INSTANCE.convertFromBTCToFiat(parsedAmountBTC.getAmount().toBigInteger());
+                return CurrencyConverter.INSTANCE.getFiatAsLocalisedString(parsedAmountFiat, false, false); 
             }
         }
         return null;
