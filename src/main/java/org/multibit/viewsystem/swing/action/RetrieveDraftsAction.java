@@ -23,13 +23,21 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import static java.lang.System.out;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.logging.Level;
 import org.multibit.model.bitcoin.BitcoinModel;
 import org.multibit.model.bitcoin.WalletAddressBookData;
 import org.multibit.model.bitcoin.WalletInfoData;
 import org.multibit.viewsystem.View;
-import org.multibit.viewsystem.swing.view.dialogs.SendEmailDialog;
+import org.multibit.viewsystem.swing.view.models.DraftsTableModel;
 import org.multibit.viewsystem.swing.view.panels.*;
 
 /**
@@ -48,6 +56,7 @@ public class RetrieveDraftsAction extends AbstractAction {
     private SendBitcoinPanel aPanel;
     private DraftsPanel dPanel;
     private JTable table;
+    private int rowIndex;
     /**
      * Creates a new {@link ExportTransactionsSubmitAction}.
      */
@@ -65,14 +74,77 @@ public class RetrieveDraftsAction extends AbstractAction {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+        rowIndex = table.getSelectedRow();
+        if(rowIndex!= -1){
+        String addressW = (String)table.getValueAt(table.getSelectedRow(), 0);
+        String labelW = (String)table.getValueAt(table.getSelectedRow(), 1);
+        String amountW = (String)table.getValueAt(table.getSelectedRow(), 2);
+        bitcoinController.getModel().setActiveWalletPreference(BitcoinModel.SEND_ADDRESS, addressW);
+        bitcoinController.getModel().setActiveWalletPreference(BitcoinModel.SEND_LABEL, labelW);
+        bitcoinController.getModel().setActiveWalletPreference(BitcoinModel.SEND_AMOUNT, amountW);
+        bitcoinController.displayView(View.SEND_BITCOIN_VIEW);
         String address = (String)table.getValueAt(table.getSelectedRow(), 0);
         String label = (String)table.getValueAt(table.getSelectedRow(), 1);
         String amount = (String)table.getValueAt(table.getSelectedRow(), 2);
-        bitcoinController.getModel().setActiveWalletPreference(BitcoinModel.SEND_ADDRESS, address);
-        bitcoinController.getModel().setActiveWalletPreference(BitcoinModel.SEND_LABEL, label);
-        bitcoinController.getModel().setActiveWalletPreference(BitcoinModel.SEND_AMOUNT, amount);
-        bitcoinController.displayView(View.SEND_BITCOIN_VIEW);
+        
+        String walletAddress = "";
+        WalletInfoData addressBook = bitcoinController.getModel().getActiveWalletWalletInfo();
+            if (addressBook != null) {
+                ArrayList<WalletAddressBookData> receivingAddresses = addressBook.getReceivingAddresses();
+                if (receivingAddresses != null) {
+                    if (receivingAddresses.iterator().hasNext()) {
+                        WalletAddressBookData addressBookData = receivingAddresses.iterator().next();
+                        if (addressBookData != null) {
+                            walletAddress = addressBookData.getAddress();
+                        }
+                    }
+                }
+            }
+        try {
+        File file = new File(walletAddress+"_Drafts.txt");
+        File tempFile = new File("temp1.txt");
+        
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
+        
+        
+        try{
+            Scanner scanner=new Scanner(file);
+            String x=(address + "////" + label + "////" + amount);
+            int i =0;
+            while (scanner.hasNextLine()){
+                String line=scanner.nextLine();
+                if (i != rowIndex) {
+                    pw.println(line);
+                    pw.flush();
+                }
+                i++;
+            }
+            scanner.close(); 
+            pw.close();
+            br.close();
+            
+            if (!file.delete()) {
+                JOptionPane.showMessageDialog(null,"Cannot Delete");
+                return;
+            }
+            
+            if (!tempFile.renameTo(file)){
+                JOptionPane.showMessageDialog(null,"Could not rename file");
+            }
+            
+            
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(null, "Error");
+            }
+        }catch (FileNotFoundException ex) {
+      ex.printStackTrace();
+    }   catch (IOException ex) {
+            java.util.logging.Logger.getLogger(RetrieveDraftsAction.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        } else{
+            JOptionPane.showMessageDialog(null, "No selected row in the table..");
+        }
         
     }
    
