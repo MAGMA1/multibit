@@ -93,6 +93,7 @@ public class DeleteDraftsAction extends AbstractAction {
                     }
                 }
             }
+            
         try {
         File file = new File(walletAddress+"_Drafts.txt");
         File tempFile = new File("temp1.txt");
@@ -120,7 +121,19 @@ public class DeleteDraftsAction extends AbstractAction {
             scanner.close(); 
             pw.close();
             br.close();
-            
+            if (file.delete()) {
+                int response;
+                response = JOptionPane.showConfirmDialog(null,"Are You Sure You Want To Delete The Draft?");
+                if (response == JOptionPane.YES_OPTION){
+                    System.out.print("yes");
+                    
+                }
+                else{
+                    System.out.print("no/cancel");
+                    
+                }
+                return;
+            }
             if (!file.delete()) {
                 JOptionPane.showMessageDialog(null,"Cannot Delete");
                 return;
