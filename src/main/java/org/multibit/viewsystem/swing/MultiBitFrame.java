@@ -905,6 +905,19 @@ public class MultiBitFrame extends JFrame implements ViewSystem, ApplicationList
         menuItem.setFont(FontSizer.INSTANCE.getAdjustedDefaultFont());
         menuItem.setComponentOrientation(componentOrientation);
         viewMenu.add(menuItem);
+        
+        // View Drafts action.
+        MultiBitAction showDraftsAction = new MultiBitAction(controller, "drafts.png",
+                "Drafts", "View drafts", "draftsPanelAction.mnemonic",
+                View.DRAFT_VIEW);
+        showDraftsAction.putValue(Action.SHORT_DESCRIPTION, HelpContentsPanel.createTooltipTextForMenuItem("View Drafts"));
+        menuItem = new JMenuItem(showDraftsAction);
+        menuItem.setText("Drafts");
+        ImageIcon image = new ImageIcon("drafts.png");
+        menuItem.setIcon(image);
+        menuItem.setFont(FontSizer.INSTANCE.getAdjustedDefaultFont());
+        menuItem.setComponentOrientation(componentOrientation);
+        viewMenu.add(menuItem);
 
         // Show messages action.
         MultiBitAction showMessagesAction = new MultiBitAction(controller, ImageLoader.MESSAGES_ICON_FILE, "messagesPanel.text",
